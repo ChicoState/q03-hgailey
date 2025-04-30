@@ -14,6 +14,13 @@ class GuesserTest : public ::testing::Test
 		virtual void TearDown(){} //clean up after each test, (before destructor)
 };
 
+
+/* FAILS: 
+   Password of length < 3 -> remaining decremented when the password should be locked
+                          -> password not locked when distance should be calculated as > 2
+   Reseting remaining guesses to 3 after correct guess is not implemented
+*/
+
 // Example "smoke test" (can be deleted)
 // PASS
 TEST(GuesserTest, smoke_test)
@@ -42,9 +49,30 @@ TEST(GuesserTest, remaining_test)
   ASSERT_EQ(1, remaining);
 }
 
+// Test for if password matches correctly after one incorrect guess
+// PASS
+TEST(GuesserTest, match_after_one_check)
+{
+  Guesser object("Secret");
+  object.match("Secre");
+  bool match = object.match("Secret");
+  ASSERT_EQ(true, match);
+}
+
+// Test for if guess still matches after two incorrect tries
+// PASS
+TEST(GuesserTest, reset_test)
+{
+  Guesser object("Secret");
+  object.match("Secre");
+  object.match("Secret");
+  bool match = object.match("Secret");
+  ASSERT_EQ(true, match);
+}
+
 // Test for if remaining resets as expected after one wrong guess and one correct guess
 // FAIL
-TEST(GuesserTest, reset_test)
+TEST(GuesserTest, match_after_two_test)
 {
   Guesser object("Secret");
   object.match("Secre");
